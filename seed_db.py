@@ -90,7 +90,7 @@ properties = [
             )
         ]
 
-db.add_all(kothrud_properties)
+db.add_all(properties)
 db.commit()
 db.close()
 
