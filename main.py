@@ -13,7 +13,7 @@ from typing import List, Optional
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey, Enum as SQLEnum
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
-
+from sqlalchemy.orm import Session, relationship
 from jose import JWTError, jwt
 import bcrypt
 
