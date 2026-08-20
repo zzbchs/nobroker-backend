@@ -219,8 +219,8 @@ def create_bid(
     """Tenant places a bid on a property."""
     if current_user.role != Role.tenant:
         raise HTTPException(status_code=403, detail="Only tenants can make a bid")
-    if not current_user.is_id_verified or not current_user.background_check_passed:
-        raise HTTPException(status_code=403, detail="Tenant must pass ID verification and background check to bid")
+    #if not current_user.is_id_verified or not current_user.background_check_passed:
+     #   raise HTTPException(status_code=403, detail="Tenant must pass ID verification and background check to bid")
 
     property_exists = db.query(DBProperty).filter(DBProperty.id == property_id).first()
     if not property_exists:
