@@ -267,3 +267,16 @@ def upload_property_image(
     db.refresh(property_item)
     
     return {"message": "Image saved successfully!", "image_url": image_url, "all_images": existing_images}
+
+@app.get("/bids", response_model=List[BidSchema])
+def get_owner_bids(current_user: DBUser = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Allows an owner to see all bids placed on their properties."""
+    if current_user.role != Role.owner:
+        raise HTTPException(status_code=403, detail="Only owners can view bids")
+        
+    # Find all properties owned by this specific user
+    owned_properties = db.query(DBProperty.id).filter(DBProperty.owner_id == current_user.id).all()
+    property_ids = [p.id for p in owned_properties]
+    
+    # Return bids that match those properties
+    return db.query(DBBid).filter(DBBid.property_id.in_(property_ids)).all()
