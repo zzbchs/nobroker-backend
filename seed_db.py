@@ -10,9 +10,9 @@ db = SessionLocal()
 # Delete old users and create new ones
 db.query(DBUser).delete()
         
-tenant = DBUser(email="tenant@kothrud.com", password_hash=get_password_hash("password123"), role=Role.tenant)
-owner1 = DBUser(email="owner1@kothrud.com", password_hash=get_password_hash("password123"), role=Role.owner)
-owner2 = DBUser(email="owner2@kothrud.com", password_hash=get_password_hash("password123"), role=Role.owner)
+tenant = DBUser(email="tenant@kothrud.com", hashed_password=get_password_hash("password123"), role=Role.tenant)
+owner1 = DBUser(email="owner1@kothrud.com", hashed_password=get_password_hash("password123"), role=Role.owner)
+owner2 = DBUser(email="owner2@kothrud.com", hashed_password=get_password_hash("password123"), role=Role.owner)
         
 db.add_all([tenant, owner1, owner2])
 db.commit()
