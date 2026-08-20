@@ -295,3 +295,11 @@ def get_owner_bids(current_user: DBUser = Depends(get_current_user), db: Session
     
     # Return bids that match those properties
     return db.query(DBBid).filter(DBBid.property_id.in_(property_ids)).all()
+
+@app.get("/my-properties", response_model=List[PropertySchema])
+def get_my_properties(current_user: DBUser = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Allows an owner to fetch a list of properties they own."""
+    if current_user.role != Role.owner:
+        raise HTTPException(status_code=403, detail="Only owners can view their properties here")
+    
+    return db.query(DBProperty).filter(DBProperty.owner_id == current_user.id).all()
