@@ -148,6 +148,15 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 
 # --- 6. FASTAPI APP & ENDPOINTS ---
 app = FastAPI(title="NoBroker Clone API - Kothrud Edition")
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows any frontend to connect
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows GET, POST, PUT, etc.
+    allow_headers=["*"],
+)
 
 # Serve uploaded static photos locally at /static/...
 app.mount("/static", StaticFiles(directory=UPLOAD_DIR), name="static")
