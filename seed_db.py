@@ -39,18 +39,56 @@ db.add_all([owner, tenant_verified, tenant_unverified])
 db.commit()
 
 # 2. Add 10 Kothrud Properties
-kothrud_properties = [
-    DBProperty(owner_id=owner.id, title="Premium 3BHK in Sobha Nesara", description="Luxury high-rise, 1200 sqft carpet, facing NDA hills. Unfurnished with modular kitchen.", area="Chandni Chowk / Kothrud", rent_asking_price=65000, images=json.dumps([])),
-    DBProperty(owner_id=owner.id, title="1BHK near Vanaz Metro Station", description="Ideal for daily commuters. 600 sqft, semi-furnished, 2 mins walk to metro.", area="Paud Road, Kothrud", rent_asking_price=22000, images=json.dumps([])),
-    DBProperty(owner_id=owner.id, title="Spacious 2BHK in Mayur Colony", description="Quiet residential lane, prime locality, 24/7 water supply. Family preferred.", area="Mayur Colony, Kothrud", rent_asking_price=35000, images=json.dumps([])),
-    DBProperty(owner_id=owner.id, title="Fully Furnished 3BHK near MIT-WPU", description="Perfect for students or professors. Includes beds, ACs, and Wi-Fi setup.", area="Rambaug Colony, Kothrud", rent_asking_price=55000, images=json.dumps([])),
-    DBProperty(owner_id=owner.id, title="Compact 1RK for Bachelors", description="Affordable room-kitchen setup. Close to local eateries and grocery stores.", area="Bhusari Colony, Kothrud", rent_asking_price=12000, images=json.dumps([])),
-    DBProperty(owner_id=owner.id, title="Modern 2BHK in Dahanukar Colony", description="Recently renovated, 900 sqft carpet, excellent cross ventilation.", area="Dahanukar Colony, Kothrud", rent_asking_price=30000, images=json.dumps([])),
-    DBProperty(owner_id=owner.id, title="1BHK in Mahatma Society", description="Premium gated community, well-maintained gardens, highly secure.", area="Mahatma Society, Kothrud", rent_asking_price=24000, images=json.dumps([])),
-    DBProperty(owner_id=owner.id, title="2BHK Flat near Karve Statue", description="Walkable distance to central Kothrud amenities. Dedicated bike parking.", area="Karve Road, Kothrud", rent_asking_price=32000, images=json.dumps([])),
-    DBProperty(owner_id=owner.id, title="Studio Apartment Ideal Colony", description="Minimalist studio setup, bachelor friendly, pet friendly.", area="Ideal Colony, Kothrud", rent_asking_price=18000, images=json.dumps([])),
-    DBProperty(owner_id=owner.id, title="4BHK Duplex Penthouse", description="Massive terrace, exclusive lift access, servant quarters included.", area="Paud Road, Kothrud", rent_asking_price=80000, images=json.dumps([]))
-]
+properties = [
+            DBProperty(
+                title="Cozy 1BHK near MIT College",
+                description="Perfect for students. Walking distance to campus with fast WiFi.",
+                area="Kothrud East",
+                listing_type="Rent",
+                property_type="Student Home",
+                tenant_preference="Students Only",
+                image_url="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500&q=80",
+                rent_asking_price=16000,
+                sale_price=None,
+                owner_id=owner.id
+            ),
+            DBProperty(
+                title="Quiet Ground Floor 2BHK",
+                description="No stairs! Peaceful society with a private garden space.",
+                area="Kothrud West",
+                listing_type="Rent",
+                property_type="Full House",
+                tenant_preference="Seniors Preferred",
+                image_url="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=500&q=80",
+                rent_asking_price=22000,
+                sale_price=None,
+                owner_id=owner.id
+            ),
+            DBProperty(
+                title="Premium 3BHK Penthouse",
+                description="Luxury living with a city view. Urgent sale by owner moving abroad.",
+                area="Bhusari Colony",
+                listing_type="Sale",
+                property_type="Full House",
+                tenant_preference="Anyone",
+                image_url="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=500&q=80",
+                rent_asking_price=None,
+                sale_price=12500000, # 1.25 Cr
+                owner_id=owner.id
+            ),
+            DBProperty(
+                title="Shared PG for IT Professionals",
+                description="Fully furnished with daily meals included. Near tech park.",
+                area="Bavdhan Border",
+                listing_type="Rent",
+                property_type="PG",
+                tenant_preference="Bachelors",
+                image_url="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=500&q=80",
+                rent_asking_price=8500,
+                sale_price=None,
+                owner_id=owner.id
+            )
+        ]
 
 db.add_all(kothrud_properties)
 db.commit()
