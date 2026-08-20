@@ -103,6 +103,24 @@ class UserSchema(BaseModel):
     
     model_config = ConfigDict(from_attributes=True)
 
+class PropertyCreate(BaseModel):
+    title: str
+    description: str
+    area: str
+    listing_type: str
+    property_type: str
+    tenant_preference: str
+    image_url: str
+    rent_asking_price: Optional[int] = None
+    sale_price: Optional[int] = None
+    sqft: Optional[int] = None
+    furnishing: Optional[str] = None
+    highlights: Optional[str] = None
+    video_url: Optional[str] = None
+    image_gallery: Optional[str] = None
+    lat: Optional[float] = None
+    lng: Optional[float] = None
+
 class PropertySchema(BaseModel):
     id: int
     title: str
