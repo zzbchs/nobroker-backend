@@ -27,13 +27,14 @@ properties = [
                 property_type="Full House",
                 tenant_preference="Anyone",
                 image_url="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80",
-                video_url="https://www.w3schools.com/html/mov_bbb.mp4", # Dummy Video!
-                image_gallery="https://images.unsplash.com/photo-1502672260266-1c1e39b4980a?w=200,https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=200",
+                video_url="https://my.matterport.com/show/?m=JomGCAHuxqK", 
+                image_gallery="https://images.unsplash.com/photo-1502672260266-1c1e39b4980a?w=200",
                 rent_asking_price=55000,
                 sale_price=None,
                 sqft=1200,
                 furnishing="Fully furnished",
-                highlights="Power Backup • Gymnasium • Club House • Swimming Pool",
+                highlights="Power Backup • Gymnasium • Club House",
+                lat=18.5362, lng=73.8055,
                 owner_id=owner1.id
             ),
             DBProperty(
@@ -50,7 +51,8 @@ properties = [
                 sale_price=8500000,
                 sqft=950,
                 furnishing="Semi furnished",
-                highlights="Park • Security • Elevator • Vastu Compliant",
+                highlights="Park • Security • Elevator",
+                lat=18.5411, lng=73.7885,
                 owner_id=owner1.id
             ),
             DBProperty(
@@ -68,6 +70,7 @@ properties = [
                 sqft=2200,
                 furnishing="Unfurnished",
                 highlights="Private Terrace • Smart Home • 2 Car Parking",
+                lat=18.5193, lng=73.7979,
                 owner_id=owner2.id
             ),
             DBProperty(
@@ -85,6 +88,7 @@ properties = [
                 sqft=300,
                 furnishing="Fully furnished",
                 highlights="WiFi • AC • Housekeeping • Meals",
+                lat=18.5679, lng=73.7541,
                 owner_id=owner2.id
             ),
             DBProperty(
@@ -102,6 +106,7 @@ properties = [
                 sqft=550,
                 furnishing="Semi furnished",
                 highlights="Close to Campus • Library • Cafeteria",
+                lat=18.5204, lng=73.8166,
                 owner_id=owner1.id
             ),
             DBProperty(
@@ -118,11 +123,11 @@ properties = [
                 sale_price=22000000,
                 sqft=3500,
                 furnishing="Unfurnished",
-                highlights="Servant Quarters • Private Lawn • Corner Plot",
+                highlights="Servant Quarters • Private Lawn",
+                lat=18.5083, lng=73.8150,
                 owner_id=owner2.id
             )
         ]
-
 db.add_all(properties)
 db.commit()
 db.close()
