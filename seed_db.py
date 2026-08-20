@@ -7,36 +7,15 @@ Base.metadata.create_all(bind=engine)
 
 db = SessionLocal()
 
-# 1. Create Test Users
-owner = DBUser(
-    name="Vikram Joshi (Owner)", 
-    role=Role.owner, 
-    email="owner@kothrud.com", 
-    hashed_password=get_password_hash("password123"),
-    is_id_verified=True,
-    background_check_passed=True
-)
-
-tenant_verified = DBUser(
-    name="Neha Kulkarni (Verified Tenant)", 
-    role=Role.tenant, 
-    email="tenant@kothrud.com", 
-    hashed_password=get_password_hash("password123"),
-    is_id_verified=True,
-    background_check_passed=True
-)
-
-tenant_unverified = DBUser(
-    name="Rohan Sharma (Unverified Tenant)", 
-    role=Role.tenant, 
-    email="rohan@kothrud.com", 
-    hashed_password=get_password_hash("password123"),
-    is_id_verified=False,
-    background_check_passed=False
-)
-
-db.add_all([owner, tenant_verified, tenant_unverified])
-db.commit()
+# Delete old users and create new ones
+        db.query(DBUser).delete()
+        
+        tenant = DBUser(email="tenant@kothrud.com", password_hash=get_password_hash("password123"), role=Role.tenant)
+        owner1 = DBUser(email="owner1@kothrud.com", password_hash=get_password_hash("password123"), role=Role.owner)
+        owner2 = DBUser(email="owner2@kothrud.com", password_hash=get_password_hash("password123"), role=Role.owner)
+        
+        db.add_all([tenant, owner1, owner2])
+        db.commit()
 
 # 2. Add 10 Kothrud Properties
 properties = [
