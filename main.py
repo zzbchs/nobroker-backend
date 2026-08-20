@@ -4,6 +4,7 @@ import shutil
 from datetime import datetime, timedelta
 from typing import List
 from enum import Enum as PyEnum
+from sqlalchemy import Column, Integer, String, Float
 
 from fastapi import FastAPI, HTTPException, Depends, status, UploadFile, File
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -119,6 +120,8 @@ class PropertySchema(BaseModel):
     highlights: Optional[str] = None
     video_url: Optional[str] = None
     image_gallery: Optional[str] = None
+    lat: Optional[float] = None
+    lng: Optional[float] = None
 
     class Config:
         from_attributes = True
