@@ -2,19 +2,17 @@ import os
 import json
 import shutil
 from datetime import datetime, timedelta
-from typing import List
+from typing import List, Optional
 from enum import Enum as PyEnum
-from sqlalchemy import Column, Integer, String, Float
 
 from fastapi import FastAPI, HTTPException, Depends, status, UploadFile, File
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, ConfigDict
-from typing import List, Optional
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey, Enum as SQLEnum
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey, Float, Enum as SQLEnum
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
-from sqlalchemy.orm import Session, relationship
+from sqlalchemy.orm import sessionmaker, Session, relationship
 from jose import JWTError, jwt
 import bcrypt
 
@@ -56,11 +54,11 @@ class DBProperty(Base):
     description = Column(String)
     area = Column(String)
     
-    # --- NEW RICH DATA COLUMNS ---
+    # --- RICH DATA COLUMNS ---
     listing_type = Column(String)      # "Rent" or "Sale"
     property_type = Column(String)     # "Full House", "PG", or "Student Home"
     tenant_preference = Column(String) # "Anyone", "Seniors", "Students", "Families"
-    image_url = Column(String)         # Link to a dummy photo
+    image_url = Column(String)         # Link to a photo
     sqft = Column(Integer, nullable=True)
     furnishing = Column(String, nullable=True)
     highlights = Column(String, nullable=True)
@@ -83,6 +81,10 @@ class DBBid(Base):
     tenant_id = Column(Integer, ForeignKey("users.id"))
     bid_amount = Column(Integer)
     status = Column(SQLEnum(BidStatus), default=BidStatus.pending)
+    message = Column(String, nullable=True) # --- NEW CHAT COLUMN ---
+    
+    property = relationship("DBProperty")
+    tenant = relationship("DBUser")
 
 Base.metadata.create_all(bind=engine)
 
@@ -150,6 +152,7 @@ class BidSchema(BaseModel):
     tenant_id: int
     bid_amount: int
     status: BidStatus
+    message: Optional[str] = None
     
     model_config = ConfigDict(from_attributes=True)
 
@@ -196,7 +199,6 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 
 # --- 6. FASTAPI APP & ENDPOINTS ---
 app = FastAPI(title="NoBroker Clone API - Kothrud Edition")
-from fastapi.middleware.cors import CORSMiddleware
 
 app.add_middleware(
     CORSMiddleware,
@@ -232,24 +234,45 @@ def view_user_profile(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
+@app.post("/properties", response_model=PropertySchema)
+def create_property(prop: PropertyCreate, current_user: DBUser = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Allows an authenticated owner to list a new property on the marketplace."""
+    if current_user.role != Role.owner:
+        raise HTTPException(status_code=403, detail="Only owners can add properties")
+
+    # Convert the incoming data to a database model and attach the owner's ID
+    new_prop = DBProperty(**prop.dict(), owner_id=current_user.id)
+    db.add(new_prop)
+    db.commit()
+    db.refresh(new_prop)
+    return new_prop
+
 @app.post("/bids", response_model=BidSchema)
 def create_bid(
     property_id: int, 
-    bid_amount: int, 
+    bid_amount: int = 0, 
+    message: Optional[str] = None, 
     current_user: DBUser = Depends(get_current_user), 
     db: Session = Depends(get_db)
 ):
-    """Tenant places a bid on a property."""
+    """Tenant places a bid or sends a chat message on a property."""
     if current_user.role != Role.tenant:
         raise HTTPException(status_code=403, detail="Only tenants can make a bid")
-    #if not current_user.is_id_verified or not current_user.background_check_passed:
-     #   raise HTTPException(status_code=403, detail="Tenant must pass ID verification and background check to bid")
+    
+    # Bypassed ID check for testing purposes!
+    # if not current_user.is_id_verified or not current_user.background_check_passed:
+    #     raise HTTPException(status_code=403, detail="Tenant must pass ID verification and background check to bid")
 
     property_exists = db.query(DBProperty).filter(DBProperty.id == property_id).first()
     if not property_exists:
         raise HTTPException(status_code=404, detail="Property not found")
 
-    new_bid = DBBid(property_id=property_id, tenant_id=current_user.id, bid_amount=bid_amount)
+    new_bid = DBBid(
+        property_id=property_id, 
+        tenant_id=current_user.id, 
+        bid_amount=bid_amount,
+        message=message # Capturing the chat text!
+    )
     db.add(new_bid)
     db.commit()
     db.refresh(new_bid)
@@ -307,14 +330,13 @@ def upload_property_image(
 
     image_url = f"/static/prop_{property_id}_{clean_filename}"
     
-    existing_images = json.loads(property_item.images) if property_item.images else []
-    existing_images.append(image_url)
-    property_item.images = json.dumps(existing_images)
+    # Store directly in image_url for simplicity in the current architecture
+    property_item.image_url = image_url
     
     db.commit()
     db.refresh(property_item)
     
-    return {"message": "Image saved successfully!", "image_url": image_url, "all_images": existing_images}
+    return {"message": "Image saved successfully!", "image_url": image_url}
 
 @app.get("/bids", response_model=List[BidSchema])
 def get_owner_bids(current_user: DBUser = Depends(get_current_user), db: Session = Depends(get_db)):
@@ -336,14 +358,3 @@ def get_my_properties(current_user: DBUser = Depends(get_current_user), db: Sess
         raise HTTPException(status_code=403, detail="Only owners can view their properties here")
     
     return db.query(DBProperty).filter(DBProperty.owner_id == current_user.id).all()
-@app.post("/properties", response_model=PropertySchema)
-def create_property(prop: PropertyCreate, current_user: DBUser = Depends(get_current_user), db: Session = Depends(get_db)):
-    if current_user.role != Role.owner:
-        raise HTTPException(status_code=403, detail="Only owners can add properties")
-
-    # Convert the incoming data to a database model and attach the owner's ID
-    new_prop = DBProperty(**prop.dict(), owner_id=current_user.id)
-    db.add(new_prop)
-    db.commit()
-    db.refresh(new_prop)
-    return new_prop
