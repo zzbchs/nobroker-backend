@@ -63,6 +63,8 @@ class DBProperty(Base):
     sqft = Column(Integer, nullable=True)
     furnishing = Column(String, nullable=True)
     highlights = Column(String, nullable=True)
+    video_url = Column(String, nullable=True)
+    image_gallery = Column(String, nullable=True) # Comma-separated links
     
     # Prices are now optional depending on if it's for rent or sale
     rent_asking_price = Column(Integer, nullable=True)
@@ -113,6 +115,8 @@ class PropertySchema(BaseModel):
     sqft: Optional[int] = None
     furnishing: Optional[str] = None
     highlights: Optional[str] = None
+    video_url: Optional[str] = None
+    image_gallery: Optional[str] = None
 
     class Config:
         from_attributes = True
