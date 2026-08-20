@@ -18,6 +18,7 @@ db.add_all([tenant, owner1, owner2])
 db.commit()
 
 # 2. Add 10 Kothrud Properties
+# 2. Add 10 Kothrud Properties
 properties = [
             DBProperty(
                 title="Cozy 1BHK near MIT College",
@@ -29,7 +30,7 @@ properties = [
                 image_url="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500&q=80",
                 rent_asking_price=16000,
                 sale_price=None,
-                owner_id=owner.id
+                owner_id=owner1.id  # <-- Changed to owner1
             ),
             DBProperty(
                 title="Quiet Ground Floor 2BHK",
@@ -41,7 +42,7 @@ properties = [
                 image_url="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=500&q=80",
                 rent_asking_price=22000,
                 sale_price=None,
-                owner_id=owner.id
+                owner_id=owner1.id  # <-- Changed to owner1
             ),
             DBProperty(
                 title="Premium 3BHK Penthouse",
@@ -52,8 +53,8 @@ properties = [
                 tenant_preference="Anyone",
                 image_url="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=500&q=80",
                 rent_asking_price=None,
-                sale_price=12500000, # 1.25 Cr
-                owner_id=owner.id
+                sale_price=12500000, 
+                owner_id=owner2.id  # <-- Changed to owner2
             ),
             DBProperty(
                 title="Shared PG for IT Professionals",
@@ -65,10 +66,9 @@ properties = [
                 image_url="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=500&q=80",
                 rent_asking_price=8500,
                 sale_price=None,
-                owner_id=owner.id
+                owner_id=owner2.id  # <-- Changed to owner2
             )
         ]
-
 db.add_all(properties)
 db.commit()
 db.close()
