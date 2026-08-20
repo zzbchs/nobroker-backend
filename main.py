@@ -72,6 +72,8 @@ class DBProperty(Base):
     
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("DBUser")
+    lat = Column(Float, nullable=True)
+    lng = Column(Float, nullable=True)
 
 class DBBid(Base):
     __tablename__ = "bids"
