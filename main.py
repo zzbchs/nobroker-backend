@@ -51,12 +51,22 @@ class DBUser(Base):
 class DBProperty(Base):
     __tablename__ = "properties"
     id = Column(Integer, primary_key=True, index=True)
-    owner_id = Column(Integer, ForeignKey("users.id"))
     title = Column(String)
     description = Column(String)
     area = Column(String)
-    rent_asking_price = Column(Integer)
-    images = Column(String)  # JSON-encoded array of image URLs
+    
+    # --- NEW RICH DATA COLUMNS ---
+    listing_type = Column(String)      # "Rent" or "Sale"
+    property_type = Column(String)     # "Full House", "PG", or "Student Home"
+    tenant_preference = Column(String) # "Anyone", "Seniors", "Students", "Families"
+    image_url = Column(String)         # Link to a dummy photo
+    
+    # Prices are now optional depending on if it's for rent or sale
+    rent_asking_price = Column(Integer, nullable=True)
+    sale_price = Column(Integer, nullable=True) 
+    
+    owner_id = Column(Integer, ForeignKey("users.id"))
+    owner = relationship("DBUser")
 
 class DBBid(Base):
     __tablename__ = "bids"
@@ -87,14 +97,19 @@ class UserSchema(BaseModel):
 
 class PropertySchema(BaseModel):
     id: int
-    owner_id: int
     title: str
     description: str
     area: str
-    rent_asking_price: int
-    images: str
-    
-    model_config = ConfigDict(from_attributes=True)
+    listing_type: str
+    property_type: str
+    tenant_preference: str
+    image_url: str
+    rent_asking_price: Optional[int] = None
+    sale_price: Optional[int] = None
+    owner_id: int
+
+    class Config:
+        from_attributes = True
 
 class BidSchema(BaseModel):
     id: int
