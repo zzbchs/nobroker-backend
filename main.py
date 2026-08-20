@@ -60,6 +60,9 @@ class DBProperty(Base):
     property_type = Column(String)     # "Full House", "PG", or "Student Home"
     tenant_preference = Column(String) # "Anyone", "Seniors", "Students", "Families"
     image_url = Column(String)         # Link to a dummy photo
+    sqft = Column(Integer, nullable=True)
+    furnishing = Column(String, nullable=True)
+    highlights = Column(String, nullable=True)
     
     # Prices are now optional depending on if it's for rent or sale
     rent_asking_price = Column(Integer, nullable=True)
@@ -107,6 +110,9 @@ class PropertySchema(BaseModel):
     rent_asking_price: Optional[int] = None
     sale_price: Optional[int] = None
     owner_id: int
+    sqft: Optional[int] = None
+    furnishing: Optional[str] = None
+    highlights: Optional[str] = None
 
     class Config:
         from_attributes = True
