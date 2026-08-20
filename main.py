@@ -336,3 +336,14 @@ def get_my_properties(current_user: DBUser = Depends(get_current_user), db: Sess
         raise HTTPException(status_code=403, detail="Only owners can view their properties here")
     
     return db.query(DBProperty).filter(DBProperty.owner_id == current_user.id).all()
+@app.post("/properties", response_model=PropertySchema)
+def create_property(prop: PropertyCreate, current_user: DBUser = Depends(get_current_user), db: Session = Depends(get_db)):
+    if current_user.role != Role.owner:
+        raise HTTPException(status_code=403, detail="Only owners can add properties")
+
+    # Convert the incoming data to a database model and attach the owner's ID
+    new_prop = DBProperty(**prop.dict(), owner_id=current_user.id)
+    db.add(new_prop)
+    db.commit()
+    db.refresh(new_prop)
+    return new_prop
